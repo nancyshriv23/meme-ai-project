@@ -14,10 +14,11 @@ An AI-powered web app that generates funny meme captions based on user input.
 - AI API: OpenRouter (LLaMA 3)
 
 ## 🌐 Live Demo
-https://your-app-name.onrender.com
+https://meme-ai-project.onrender.com
+https://meme-ai-project.netlify.app/
 
 ## 📂 GitHub Repo
-https://github.com/your-username/meme-ai-project
+https://github.com/nancyshriv23/meme-ai-project
 
 ## ⚙️ Setup
 
