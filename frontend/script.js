@@ -5,76 +5,108 @@ const line2 = document.getElementById("line2");
 const container = document.getElementById("memeTextContainer");
 const generateBtn = document.getElementById("generateBtn");
 
-// Template Change Logic
+// =========================
+// TEMPLATE SWITCHING
+// =========================
 templateSelect.addEventListener("change", () => {
-    const val = templateSelect.value;
-    memeImage.src = `templates/${val}`;
-    
-    // Layout reset
+    const value = templateSelect.value;
+    memeImage.src = `templates/${value}`;
+
     container.className = "";
-    if (val === "drake.jpg" || val === "tuxedowinnie.jpg") {
+
+    if (value === "drake.jpg" || value === "tuxedowinnie.jpg") {
         container.classList.add("layout-split");
     } else {
         container.classList.add("layout-stacked");
     }
 });
 
-// Generate Button Click
+// =========================
+// EVENT HANDLER
+// =========================
 generateBtn.addEventListener("click", generateMeme);
 
+// =========================
+// MAIN FUNCTION
+// =========================
 async function generateMeme() {
-    const topic = document.getElementById("userInput").value.trim();
+    const input = document.getElementById("userInput");
+    const topic = input.value.trim();
 
     if (!topic) {
-        alert("Kuch likho!");
+        showMessage("Please enter a topic to generate a meme.");
         return;
     }
 
-    document.getElementById("line1").innerText = "THINKING...";
-    document.getElementById("line2").innerText = "";
+    setLoadingState(true);
 
     try {
-        const res = await fetch("http://localhost:3000/generate", {
+        const response = await fetch("https://meme-ai-project.onrender.com/generate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            // ✅ THIS IS IMPORTANT
             body: JSON.stringify({ text: topic })
         });
 
-        const data = await res.json();
-        console.log("API Response:", data);
+        if (!response.ok) {
+            throw new Error("Failed to fetch from server");
+        }
 
-        // ✅ THIS IS IMPORTANT
-        let caption = data.response || "";
+        const data = await response.json();
 
-        // 🔥 CLEAN AI JUNK
+        let caption = data?.response?.trim() || "";
+
+        if (!caption) {
+            throw new Error("Empty response from AI");
+        }
+
+        // =========================
+        // CLEANING RESPONSE
+        // =========================
         caption = caption
             .replace(/HERE ARE.*?:/i, "")
             .replace(/\d+\.\s*/g, "")
-            .split("\n")[0] // take first line only
-            .trim();
+            .split("\n")[0]
+            .trim()
+            .toUpperCase();
 
-        if (!caption) {
-            throw new Error("No response from API");
-        }
-
-        caption = caption.toUpperCase();
-
+        // =========================
+        // SPLIT LOGIC
+        // =========================
         if (caption.includes("|")) {
-            const parts = caption.split("|");
+            const [top, bottom] = caption.split("|");
 
-            document.getElementById("line1").innerText = parts[0].trim();
-            document.getElementById("line2").innerText = parts[1].trim();
+            line1.innerText = top.trim();
+            line2.innerText = bottom.trim();
         } else {
-            document.getElementById("line1").innerText = caption;
-            document.getElementById("line2").innerText = "";
+            line1.innerText = caption;
+            line2.innerText = "";
         }
 
-    } catch (err) {
-        console.error(err);
-        document.getElementById("line1").innerText = "AI FAILED 💀";
-        document.getElementById("line2").innerText = "TRY AGAIN";
+    } catch (error) {
+        console.error("Error:", error);
+        line1.innerText = "FAILED TO GENERATE";
+        line2.innerText = "PLEASE TRY AGAIN";
+    } finally {
+        setLoadingState(false);
     }
+}
+
+// =========================
+// UI HELPERS
+// =========================
+function setLoadingState(isLoading) {
+    if (isLoading) {
+        line1.innerText = "GENERATING...";
+        line2.innerText = "";
+        generateBtn.disabled = true;
+    } else {
+        generateBtn.disabled = false;
+    }
+}
+
+function showMessage(message) {
+    line1.innerText = message;
+    line2.innerText = "";
 }
