@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme AI Intelligence</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="main-card">
+        <div class="header">
+            <h1>🎭 Meme AI Intelligence</h1>
+            <p>Generate viral captions in seconds</p>
+        </div>
+
+        <div class="input-container">
+            <div class="search-pill">
+                <input type="text" id="userInput" placeholder="Enter topic (e.g. 1% Battery)...">
+                <button id="generateBtn">Generate ✨</button>
+            </div>
+        </div>
+
+        <div class="template-section">
+            <label>Template: </label>
+            <select id="templateSelect">
+                <option value="laughingleo.jpg">Laughing Leo 🍷</option>
+                <option value="drake.jpg">Drake Hotline Bling 🕺</option>
+                <option value="disaster.jpg">Disaster Girl 🔥</option>
+                <option value="distractedbf.jpg">Distracted Boyfriend 👫</option>
+                <option value="spongebob.jpg">Mocking Spongebob 🧽</option>
+                <option value="tuxedowinnie.jpg">Tuxedo Winnie 🧸</option>
+            </select>
+        </div>
+
+        <div class="meme-display" id="exportArea">
+            <img id="memeImage" src="templates/laughingleo.jpg" alt="meme template">
+            <div id="memeTextContainer" class="layout-stacked">
+                <div class="text-box" id="line1">TOP LINE</div>
+                <div class="text-box" id="line2">BOTTOM LINE</div>
+            </div>
+        </div>
+
+        <button class="download-btn" onclick="downloadMeme()">📥 Save Meme</button>
+    </div>
+
+    <!-- ✅ Important -->
+    <script src="script.js" defer></script>
+
+</body>
+</html>
