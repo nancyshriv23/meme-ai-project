@@ -30,66 +30,59 @@ generateBtn.addEventListener("click", generateMeme);
 // MAIN FUNCTION
 // =========================
 async function generateMeme() {
-    const input = document.getElementById("userInput");
-    const topic = input.value.trim();
+    const topic = document.getElementById("userInput").value.trim();
 
     if (!topic) {
-        showMessage("Please enter a topic to generate a meme.");
+        alert("Kuch likho!");
         return;
     }
 
-    setLoadingState(true);
+    document.getElementById("line1").innerText = "THINKING...";
+    document.getElementById("line2").innerText = "";
 
     try {
-        const response = await fetch("https://meme-ai-project.onrender.com/generate", {
+        const res = await fetch("http://localhost:3000/generate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
+            // ✅ THIS IS IMPORTANT
             body: JSON.stringify({ text: topic })
         });
 
-        if (!response.ok) {
-            throw new Error("Failed to fetch from server");
-        }
+        const data = await res.json();
+        console.log("API Response:", data);
 
-        const data = await response.json();
+        // ✅ THIS IS IMPORTANT
+        let caption = data.response || "";
 
-        let caption = data?.response?.trim() || "";
-
-        if (!caption) {
-            throw new Error("Empty response from AI");
-        }
-
-        // =========================
-        // CLEANING RESPONSE
-        // =========================
+        // 🔥 CLEAN AI JUNK
         caption = caption
             .replace(/HERE ARE.*?:/i, "")
             .replace(/\d+\.\s*/g, "")
-            .split("\n")[0]
-            .trim()
-            .toUpperCase();
+            .split("\n")[0] // take first line only
+            .trim();
 
-        // =========================
-        // SPLIT LOGIC
-        // =========================
-        if (caption.includes("|")) {
-            const [top, bottom] = caption.split("|");
-
-            line1.innerText = top.trim();
-            line2.innerText = bottom.trim();
-        } else {
-            line1.innerText = caption;
-            line2.innerText = "";
+        if (!caption) {
+            throw new Error("No response from API");
         }
 
-    } catch (error) {
-        console.error("Error:", error);
-        line1.innerText = "FAILED TO GENERATE";
-        line2.innerText = "PLEASE TRY AGAIN";
-    } finally {
-        setLoadingState(false);
+        caption = caption.toUpperCase();
+
+        if (caption.includes("|")) {
+            const parts = caption.split("|");
+
+            document.getElementById("line1").innerText = parts[0].trim();
+            document.getElementById("line2").innerText = parts[1].trim();
+        } else {
+            document.getElementById("line1").innerText = caption;
+            document.getElementById("line2").innerText = "";
+        }
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById("line1").innerText = "AI FAILED 💀";
+        document.getElementById("line2").innerText = "TRY AGAIN";
     }
 }
 
