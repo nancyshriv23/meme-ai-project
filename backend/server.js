@@ -61,7 +61,22 @@ Me before exam | Me after exam`
         console.log(">>> Status:", response.status);
         console.log(">>> Data:", data);
 
-        const raw = data?.choices?.[0]?.message?.content || "";
+        const data = await response.json();
+
+console.log(">>> Full AI Response:", JSON.stringify(data, null, 2));
+
+        const raw =
+            data?.choices?.[0]?.message?.content ||
+            data?.output?.[0]?.content ||
+            data?.response ||
+            "";
+
+        if (!raw || raw.trim().length === 0) {
+            return res.status(500).json({
+                error: "Empty response from AI",
+                debug: data
+            });
+        }
 
         const cleaned = raw
             .replace(/HERE ARE.*?:/i, "")
@@ -69,9 +84,7 @@ Me before exam | Me after exam`
             .split("\n")[0]
             .trim();
 
-        console.log(">>> Cleaned:", cleaned);
-
-        res.json({ response: cleaned });
+        return res.json({ response: cleaned });
 
     } catch (err) {
         console.error(">>> ERROR:", err.message);
