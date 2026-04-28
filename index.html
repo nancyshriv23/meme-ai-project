@@ -3,128 +3,357 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Meme AI Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0d0d; --card: #1a1a1a; --accent: #ff3c78;
-    --accent2: #ffe135; --text: #f0f0f0; --border: #2e2e2e;
-  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    background: var(--bg); color: var(--text);
-    font-family: 'Nunito', sans-serif; min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; padding: 30px 16px 60px;
+    min-height: 100vh;
+    font-family: 'Nunito', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 16px 60px;
+    /* Rich gradient background */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f64f59 60%, #c471ed 80%, #12c2e9 100%);
+    background-attachment: fixed;
+    position: relative;
+    overflow-x: hidden;
   }
-  header { text-align: center; margin-bottom: 28px; }
+
+  /* Blurred blob shapes in background */
+  body::before {
+    content: '';
+    position: fixed; top: -20%; left: -10%;
+    width: 600px; height: 600px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed; bottom: -20%; right: -10%;
+    width: 500px; height: 500px;
+    background: rgba(255,200,100,0.15);
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* Glass card */
+  .glass {
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.4);
+    animation: cardEntrance 0.6s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes cardEntrance {
+    from { opacity: 0; transform: translateY(28px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  /* Header entrance */
+  header { animation: fadeDown 0.5s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 24px;
+    position: relative; z-index: 1;
+  }
   header h1 {
-    font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.4rem, 7vw, 4rem);
-    letter-spacing: 3px; color: var(--accent2); text-shadow: 3px 3px 0 var(--accent); line-height: 1;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.4rem, 7vw, 4rem);
+    letter-spacing: 4px;
+    color: #fff;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    line-height: 1;
   }
-  header p { font-size: 0.95rem; color: #888; margin-top: 6px; }
+  header p { font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-top: 5px; }
   .ai-badge {
-    display: inline-flex; gap: 8px; margin-top: 10px; background: #111;
-    border: 1px solid #333; border-radius: 999px; padding: 5px 14px; font-size: 0.78rem; color: #aaa;
+    display: inline-flex; gap: 6px; margin-top: 8px;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 999px; padding: 5px 16px;
+    font-size: 0.75rem; color: rgba(255,255,255,0.85);
   }
-  .ai-badge span { color: var(--accent); font-weight: 700; }
+  .ai-badge span { color: #fff; font-weight: 900; }
+
   .card {
-    background: var(--card); border: 1.5px solid var(--border); border-radius: 20px;
-    padding: 24px; width: 100%; max-width: 500px;
-    box-shadow: 0 0 40px rgba(255,60,120,0.07);
+    width: 100%; max-width: 500px;
+    padding: 24px;
+    position: relative; z-index: 1;
   }
+
   .section-label {
-    font-size: 0.72rem; color: #555; font-weight: 900;
+    font-size: 0.68rem; color: rgba(255,255,255,0.95); font-weight: 900;
     letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
   }
-  .model-row { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+
+  /* Model buttons */
+  .model-row { display: flex; gap: 8px; margin-bottom: 16px; }
   .model-btn {
-    flex: 1; min-width: 110px; background: #111; border: 1.5px solid #333;
-    color: #666; border-radius: 10px; padding: 9px 10px;
+    flex: 1;
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.9);
+    border-radius: 12px; padding: 9px 8px;
     font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 900;
-    cursor: pointer; transition: all 0.2s; text-align: center; line-height: 1.3;
+    cursor: pointer; text-align: center; line-height: 1.3;
+    transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), background 0.18s, border-color 0.18s, box-shadow 0.18s;
   }
-  .model-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(255,60,120,0.08); }
-  .model-btn:hover:not(.active) { border-color: #444; color: #aaa; }
-  .model-sub { display: block; font-size: 0.65rem; font-weight: 400; color: #555; margin-top: 2px; }
-  .model-btn.active .model-sub { color: #ff7aa8; }
-  .tone-row { display: flex; gap: 7px; margin-bottom: 18px; flex-wrap: wrap; }
+  .model-btn.active {
+    background: rgba(255,255,255,0.38);
+    border-color: rgba(255,255,255,0.8);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
+    transform: translateY(-1px);
+  }
+  .model-btn:hover:not(.active) {
+    background: rgba(255,255,255,0.22);
+    border-color: rgba(255,255,255,0.45);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  }
+  .model-btn:active { transform: translateY(0) scale(0.97); }
+  .model-sub { display: block; font-size: 0.62rem; font-weight: 400; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .model-btn.active .model-sub { color: rgba(255,255,255,0.9); }
+
+  /* Tone */
+  .tone-row { display: flex; gap: 7px; margin-bottom: 16px; flex-wrap: wrap; }
   .tone-btn {
-    background: #111; border: 1.5px solid #2e2e2e; color: #666; border-radius: 8px;
-    padding: 6px 13px; font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.92);
+    border-radius: 8px; padding: 5px 12px;
+    font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s cubic-bezier(.34,1.56,.64,1), background 0.15s, box-shadow 0.15s;
   }
-  .tone-btn.active { border-color: var(--accent2); color: var(--accent2); background: rgba(255,225,53,0.08); }
-  .input-row { display: flex; gap: 8px; margin-bottom: 18px; }
+  .tone-btn.active {
+    background: rgba(255,255,255,0.38);
+    border-color: rgba(255,255,255,0.8);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    transform: translateY(-1px) scale(1.04);
+  }
+  .tone-btn:hover:not(.active) {
+    background: rgba(255,255,255,0.22);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .tone-btn:active { transform: scale(0.95); }
+
+  /* Input */
+  .input-row { display: flex; gap: 8px; margin-bottom: 16px; }
   .input-row input {
-    flex: 1; background: #111; border: 1.5px solid #333; color: var(--text);
-    border-radius: 12px; padding: 12px 16px; font-family: 'Nunito', sans-serif; font-size: 0.95rem; outline: none;
+    flex: 1;
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    color: #fff;
+    border-radius: 12px; padding: 12px 16px;
+    font-family: 'Nunito', sans-serif; font-size: 0.95rem; outline: none;
+    transition: all 0.2s;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
   }
-  .input-row input:focus { border-color: var(--accent); }
-  .input-row input::placeholder { color: #444; }
+  .input-row input::placeholder { color: rgba(255,255,255,0.5); }
+  .input-row input:focus {
+    background: rgba(255,255,255,0.3);
+    border-color: rgba(255,255,255,0.7);
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.12);
+  }
   .gen-btn {
-    background: var(--accent); color: white; border: none; border-radius: 12px; padding: 12px 20px;
-    font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1px; cursor: pointer; white-space: nowrap;
+    background: linear-gradient(135deg, #ff6b6b, #f64f59, #c471ed);
+    background-size: 200% 200%;
+    color: #fff;
+    border: none; border-radius: 14px; padding: 13px 22px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 2px;
+    cursor: pointer; white-space: nowrap; font-weight: 700;
+    box-shadow: 0 6px 24px rgba(246,79,89,0.55), 0 2px 8px rgba(0,0,0,0.2);
+    position: relative; overflow: hidden;
+    transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s ease, background-position 0.4s ease;
+    animation: btnPulse 2.8s ease-in-out infinite;
   }
-  .gen-btn:hover { background: #ff1f62; }
-  .gen-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
-  .template-row { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  @keyframes btnPulse {
+    0%,100% { box-shadow: 0 6px 24px rgba(246,79,89,0.55), 0 0 0 0 rgba(246,79,89,0.35); }
+    50%      { box-shadow: 0 6px 24px rgba(246,79,89,0.55), 0 0 0 8px rgba(246,79,89,0); }
+  }
+  .gen-btn::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, transparent 60%);
+    border-radius: inherit; pointer-events: none;
+  }
+  .gen-btn::after {
+    content: ''; position: absolute; top: -50%; left: -60%;
+    width: 40%; height: 200%;
+    background: rgba(255,255,255,0.3);
+    transform: skewX(-20deg) translateX(0);
+    transition: left 0.5s ease;
+  }
+  .gen-btn:hover::after { left: 150%; }
+  .gen-btn:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 10px 32px rgba(246,79,89,0.65), 0 0 0 4px rgba(246,79,89,0.2);
+    background-position: right center;
+    animation: none;
+  }
+  .gen-btn:active { transform: translateY(0) scale(0.97); box-shadow: 0 4px 12px rgba(246,79,89,0.4); }
+  .gen-btn:disabled { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.4); cursor: not-allowed; transform: none; box-shadow: none; animation: none; }
+
+  /* Template */
+  .template-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
   .template-row select {
-    flex: 1; background: #111; border: 1.5px solid #333; color: var(--text);
-    border-radius: 10px; padding: 9px 12px; font-family: 'Nunito', sans-serif; font-size: 0.9rem; outline: none;
+    flex: 1;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: #fff; border-radius: 10px; padding: 9px 12px;
+    font-family: 'Nunito', sans-serif; font-size: 0.9rem; outline: none; cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
   }
+  .template-row select:hover {
+    background: rgba(255,255,255,0.28);
+    border-color: rgba(255,255,255,0.55);
+  }
+  .template-row select:focus {
+    border-color: rgba(255,255,255,0.7);
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
+  }
+  .template-row select option { background: #764ba2; color: #fff; }
+
+  /* Status */
   .status-bar {
-    min-height: 26px; font-size: 0.8rem; color: #555; margin-bottom: 14px;
-    text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;
+    min-height: 26px; font-size: 0.82rem; color: rgba(255,255,255,0.9);
+    margin-bottom: 12px; text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    transition: color 0.3s ease;
   }
-  .status-bar.thinking { color: var(--accent); }
-  .status-bar.done { color: #7defa0; }
-  .status-bar.error { color: #ff6b6b; }
+  .status-bar.thinking { color: #fff; }
+  .status-bar.done { color: #6ee7b7; }
+  .status-bar.error { color: #fca5a5; }
   .dot-pulse { display: inline-flex; gap: 4px; }
   .dot-pulse span {
-    width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
-    display: inline-block; animation: pulse 1.2s infinite;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #fff; display: inline-block;
+    animation: pulse 1.2s infinite;
   }
   .dot-pulse span:nth-child(2) { animation-delay: 0.2s; }
   .dot-pulse span:nth-child(3) { animation-delay: 0.4s; }
   @keyframes pulse { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
+
+  /* Meme display */
   .meme-wrap {
-    position: relative; border: 2.5px solid #333; border-radius: 14px;
-    overflow: hidden; background: #000; margin-bottom: 16px;
+    position: relative;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 14px; overflow: hidden;
+    background: #000; margin-bottom: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s ease, border-color 0.25s;
+  }
+  .meme-wrap:hover {
+    transform: scale(1.015);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+    border-color: rgba(255,255,255,0.65);
   }
   .meme-wrap img { width: 100%; height: auto; display: block; }
+
   .meme-overlay {
-    position: absolute; inset: 0; display: flex;
-    flex-direction: column; justify-content: space-between; pointer-events: none;
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: space-between;
+    pointer-events: none;
   }
   .meme-line {
-    color: white; font-family: 'Bebas Neue', sans-serif; font-size: clamp(22px, 5vw, 32px);
-    text-transform: uppercase; text-align: center; padding: 12px; line-height: 1.1; word-break: break-word;
-    text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000;
+    color: white; font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(20px, 5vw, 30px); text-transform: uppercase;
+    text-align: center; padding: 10px 8px; line-height: 1.1; word-break: break-word;
+    text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000, 0 0 8px rgba(0,0,0,0.9);
   }
-  .meme-overlay.split { left: 50%; width: 50%; }
-  .meme-overlay.split .meme-line {
+
+  /* Drake / Winnie split */
+  .meme-overlay.split-right { left: 50%; width: 50%; flex-direction: column; }
+  .meme-overlay.split-right .meme-line {
     flex: 1; display: flex; align-items: center; justify-content: center;
-    color: #111; text-shadow: none; font-size: clamp(14px, 3vw, 20px);
+    color: #111; text-shadow: none; font-size: clamp(12px, 2.8vw, 18px); padding: 8px;
   }
+
+  /* Distracted BF */
+  .meme-overlay.distracted .meme-line:first-child {
+    position: absolute; right: 2%; top: 5%; width: 30%;
+    text-align: center; font-size: clamp(10px, 2.2vw, 16px); padding: 4px;
+  }
+  .meme-overlay.distracted .meme-line:last-child {
+    position: absolute; left: 2%; bottom: 8%; width: 30%;
+    text-align: center; font-size: clamp(10px, 2.2vw, 16px); padding: 4px;
+  }
+
+  /* Actions */
   .action-row { display: flex; gap: 10px; }
   .save-btn {
-    flex: 1; background: #7defa0; color: #0d0d0d; border: none; border-radius: 12px; padding: 12px;
-    font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1px; cursor: pointer;
+    flex: 1; background: rgba(255,255,255,0.95); color: #059669;
+    border: none; border-radius: 12px; padding: 12px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1px;
+    cursor: pointer; font-weight: 700;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s, background 0.15s;
   }
+  .save-btn:hover {
+    background: #fff; transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 28px rgba(5,150,105,0.3);
+  }
+  .save-btn:active { transform: scale(0.97); }
   .copy-btn {
-    background: #111; border: 1.5px solid #333; color: #aaa; border-radius: 12px; padding: 12px 16px;
-    font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.95);
+    border-radius: 12px; padding: 12px 16px;
+    font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), background 0.15s, box-shadow 0.15s;
   }
-  .compare-section { width: 100%; max-width: 500px; margin-top: 20px; display: none; }
+  .copy-btn:hover {
+    background: rgba(255,255,255,0.28); color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  }
+  .copy-btn:active { transform: scale(0.95); }
+
+  /* Compare */
+  .compare-section { width: 100%; max-width: 500px; margin-top: 16px; display: none; position: relative; z-index: 1; }
   .compare-title {
     font-family: 'Bebas Neue', sans-serif; font-size: 1rem;
-    letter-spacing: 2px; color: #444; text-align: center; margin-bottom: 10px;
+    letter-spacing: 2px; color: rgba(255,255,255,0.7); text-align: center; margin-bottom: 10px;
   }
   .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .compare-card { background: #111; border: 1.5px solid #222; border-radius: 12px; padding: 14px; }
-  .c-model { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 4px; }
-  .c-source { font-size: 0.65rem; color: #3a3a3a; margin-bottom: 8px; font-style: italic; }
-  .c-text { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--accent2); line-height: 1.3; min-height: 38px; }
-  .c-text.loading { color: #2a2a2a; }
+  .compare-card {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 12px; padding: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+  .c-model { font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.95); margin-bottom: 4px; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+  .c-source { font-size: 0.62rem; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+  .c-text { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: #fff; line-height: 1.3; min-height: 36px; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+  .c-text.loading { color: rgba(255,255,255,0.25); }
 </style>
 </head>
 <body>
@@ -137,12 +366,13 @@
   </div>
 </header>
 
-<div class="card">
+<div class="card glass">
+
   <div class="section-label">AI Model</div>
   <div class="model-row">
     <div class="model-btn active" onclick="selectModel('mistral', this)">
       🟡 Mistral 7B
-      <span class="model-sub">HuggingFace</span>
+      <span class="model-sub">Pollinations AI</span>
     </div>
     <div class="model-btn" onclick="selectModel('zephyr', this)">
       🟢 Zephyr 7B
@@ -169,7 +399,7 @@
   </div>
 
   <div class="template-row">
-    <div class="section-label" style="margin:0">Template</div>
+    <div class="section-label" style="margin:0;white-space:nowrap">Template</div>
     <select id="templateSelect" onchange="changeTemplate()">
       <option value="leo">Laughing Leo 🍷</option>
       <option value="drake">Drake Hotline Bling 🕺</option>
@@ -201,7 +431,7 @@
   <div class="compare-grid">
     <div class="compare-card">
       <div class="c-model">🟡 Mistral 7B</div>
-      <div class="c-source">HuggingFace</div>
+      <div class="c-source">Pollinations AI</div>
       <div class="c-text loading" id="cc-mistral">—</div>
     </div>
     <div class="compare-card">
@@ -217,12 +447,12 @@
 const BACKEND = "https://meme-ai-project.onrender.com";
 
 const TEMPLATES = {
-  leo:          { url: "https://i.imgflip.com/1bij.jpg",   split: false },
-  drake:        { url: "https://i.imgflip.com/30b1gx.jpg", split: true  },
-  disaster:     { url: "https://i.imgflip.com/23ls.jpg",   split: false },
-  distractedbf: { url: "https://i.imgflip.com/1ur9b0.jpg", split: true  },
-  spongebob:    { url: "https://i.imgflip.com/43a45p.jpg", split: false },
-  winnie:       { url: "https://i.imgflip.com/3lmzyx.jpg", split: true  },
+  leo:          { url: "https://i.imgflip.com/1bij.jpg",    layout: "stacked"    },
+  drake:        { url: "https://i.imgflip.com/30b1gx.jpg",  layout: "split-right"},
+  disaster:     { url: "https://i.imgflip.com/23ls.jpg",    layout: "stacked"    },
+  distractedbf: { url: "https://i.imgflip.com/1ur9b0.jpg",  layout: "distracted" },
+  spongebob:    { url: "https://i.imgflip.com/1otk96.jpg",  layout: "stacked"    },
+  winnie:       { url: "https://i.imgflip.com/3lmzyx.jpg",  layout: "split-right"},
 };
 
 let selectedModel = "mistral";
@@ -234,7 +464,7 @@ function changeTemplate() {
   const key = document.getElementById("templateSelect").value;
   const tpl = TEMPLATES[key];
   document.getElementById("memeImage").src = tpl.url;
-  document.getElementById("memeOverlay").className = "meme-overlay" + (tpl.split ? " split" : "");
+  document.getElementById("memeOverlay").className = "meme-overlay " + tpl.layout;
 }
 
 function selectModel(m, btn) {
@@ -250,17 +480,42 @@ function selectTone(t, btn) {
   btn.classList.add("active");
 }
 
-async function callBackend(route, topic, tone) {
-  const res = await fetch(`${BACKEND}/${route}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: topic, tone })
-  });
+// Direct Pollinations call — no backend needed, always works
+async function callPollinations(topic, tone) {
+  const tones = {
+    funny: "funny and relatable internet humor",
+    savage: "savage roast-style dark humor", 
+    wholesome: "wholesome heartwarming feel-good",
+    hindi: "Hinglish desi Indian student humor"
+  };
+  const prompt = encodeURIComponent(
+    `Generate ONE meme caption about ${topic} in ${tones[tone]||tones.funny} style. Format: Part1 | Part2. Only output the caption line, nothing else.`
+  );
+  const res = await fetch(`https://text.pollinations.ai/${prompt}`);
   const text = await res.text();
-  if (text.trim().startsWith("<")) throw new Error("Backend returning HTML — Render may be starting up, wait 30s and retry");
-  const data = JSON.parse(text);
-  if (data.error) throw new Error(data.error);
-  return data;
+  const line = text.split("\n").find(l => l.includes("|")) || text.split("\n")[0];
+  const cleaned = line.replace(/^(caption:|meme:)\s*/i,"").trim();
+  if (!cleaned.includes("|")) throw new Error("Invalid format, retry");
+  return { response: cleaned, model: "Mistral (Pollinations AI)" };
+}
+
+async function callBackend(route, topic, tone) {
+  try {
+    const res = await fetch(`${BACKEND}/${route}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: topic, tone })
+    });
+    const text = await res.text();
+    if (text.trim().startsWith("<")) throw new Error("backend html");
+    const data = JSON.parse(text);
+    if (data.error) throw new Error(data.error);
+    return data;
+  } catch(e) {
+    // Backend failed — use Pollinations directly
+    console.warn("Backend failed, using Pollinations directly:", e.message);
+    return await callPollinations(topic, tone);
+  }
 }
 
 async function generate() {
@@ -271,10 +526,14 @@ async function generate() {
   try {
     if (selectedModel === "compare") {
       await generateCompare(topic);
-    } else {
-      const route = selectedModel === "mistral" ? "generate" : "generate-claude";
+    } else if (selectedModel === "mistral") {
       setStatus("thinking", "AI soch raha hai...");
-      const data = await callBackend(route, topic, selectedTone);
+      const data = await callPollinations(topic, selectedTone);
+      displayCaption(data.response);
+      setStatus("done", "✅ " + data.model);
+    } else {
+      setStatus("thinking", "AI soch raha hai...");
+      const data = await callBackend("generate-claude", topic, selectedTone);
       displayCaption(data.response);
       setStatus("done", "✅ " + data.model);
     }
@@ -294,12 +553,17 @@ async function generateCompare(topic) {
   document.getElementById("cc-zephyr").className    = "c-text loading";
   setStatus("thinking", "Comparing both models...");
   try {
-    const data = await callBackend("compare", topic, selectedTone);
-    document.getElementById("cc-mistral").textContent = data.llama  || "Error";
-    document.getElementById("cc-zephyr").textContent  = data.claude || "Error";
+    const [r1, r2] = await Promise.allSettled([
+      callPollinations(topic, selectedTone),
+      callBackend("generate-claude", topic, selectedTone)
+    ]);
+    const m1 = r1.status === "fulfilled" ? r1.value.response : "Error";
+    const m2 = r2.status === "fulfilled" ? r2.value.response : "Error";
+    document.getElementById("cc-mistral").textContent = m1;
+    document.getElementById("cc-zephyr").textContent  = m2;
     document.getElementById("cc-mistral").className   = "c-text";
     document.getElementById("cc-zephyr").className    = "c-text";
-    displayCaption(data.llama !== "Error" ? data.llama : data.claude);
+    displayCaption(m1 !== "Error" ? m1 : m2);
     setStatus("done", "⚡ Both models compared!");
   } catch (err) {
     setStatus("error", "❌ " + err.message.slice(0, 80));
@@ -308,14 +572,9 @@ async function generateCompare(topic) {
 
 function displayCaption(caption) {
   caption = (caption || "").toUpperCase().trim();
-  if (caption.includes("|")) {
-    const [p1, p2] = caption.split("|");
-    document.getElementById("line1").textContent = p1.trim();
-    document.getElementById("line2").textContent = p2.trim();
-  } else {
-    document.getElementById("line1").textContent = caption;
-    document.getElementById("line2").textContent = "";
-  }
+  const parts = caption.includes("|") ? caption.split("|") : [caption, ""];
+  document.getElementById("line1").textContent = parts[0].trim();
+  document.getElementById("line2").textContent = (parts[1] || "").trim();
 }
 
 function setStatus(type, msg) {
@@ -330,7 +589,7 @@ function setStatus(type, msg) {
 
 async function downloadMeme() {
   const el = document.getElementById("exportArea");
-  const canvas = await html2canvas(el, { useCORS: true, scale: 2 });
+  const canvas = await html2canvas(el, { useCORS: true, allowTaint: true, scale: 2 });
   const a = document.createElement("a");
   a.download = "meme.png";
   a.href = canvas.toDataURL();
@@ -345,4 +604,4 @@ function copyCaption() {
 }
 </script>
 </body>
-</html>
+</html>c
